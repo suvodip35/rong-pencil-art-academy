@@ -22,7 +22,12 @@ if (!id) {
 }
 ---
 
-<Layout title={`${teacher.name} - Rong Pencil Art Academy`}>
+<Layout 
+  title={`${teacher.name} - School Teacher Profile - Rong Pencil Art Academy`}
+  description={`Meet school teacher and educator ${teacher.name} at Rong Pencil Art Academy. Subject: ${teacher.subject}. Experience: ${teacher.experience} years. Discover classes taught and achievements.`}
+  keywords={`${teacher.name}, school teacher profile, drawing faculty, academic art instructor, ${teacher.subject || ''}`}
+  ogImage={`https://client-directus.siliconpin.in/assets/${teacher.img}`}
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->
     <a href="/teacher/school" class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">

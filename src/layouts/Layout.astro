@@ -9,7 +9,10 @@ export interface Props {
 	ogImage?: string;
 }
 
-const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage = "/assets/logos/rong-pencil-logo-croped-resized.png" } = Astro.props;
+const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage } = Astro.props;
+
+const defaultLogo = "/assets/logos/rong-pencil-logo-croped-resized.png";
+const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultLogo : ogImage;
 ---
 
 <!DOCTYPE html>
@@ -31,13 +34,13 @@ const { title, description = "Rong Pencil Art Academy - Nurturing artistic talen
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={ogImage} />
+		<meta property="og:image" content={resolvedOgImage} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={ogImage} />
+		<meta property="twitter:image" content={resolvedOgImage} />
 	</head>
 	<body class="bg-gray-50">
 		<MainHeader client:load />

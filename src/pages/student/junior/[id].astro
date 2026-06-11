@@ -25,7 +25,12 @@ if (!student) {
 }
 ---
 
-<Layout title={`${student.name} - Rong Pencil Art Academy`}>
+<Layout 
+  title={`${student.name} - Student Profile - Rong Pencil Art Academy`}
+  description={`View the profile, drawing gallery, and paintings of student ${student.name} at Rong Pencil Art Academy. Support our talented young learners.`}
+  keywords={`${student.name}, student profile, child artist gallery, student drawings, Rong Pencil Art Academy`}
+  ogImage={`https://client-directus.siliconpin.in/assets/${student.img}`}
+>
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->
     <a href="/student/junior" class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">

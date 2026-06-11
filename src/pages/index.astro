@@ -4,9 +4,10 @@ import HomePageMenuItems from '../components/HomePageMenuItems.astro';
 import OurProgram from '../components/OurProgram.astro';
 
 const BASE_URL = 'https://client-directus.siliconpin.in';
-const response = await fetch(`${BASE_URL}/items/students?filter[status][_eq]=published&sort=-date_created&limit=6`);
+const response = await fetch(`${BASE_URL}/items/students?filter[status][_eq]=published&sort=-date_created`);
 const studentsData = await response.json();
-const featuredStudents = studentsData.data;
+const featuredStudents = studentsData.data || [];
+const duplicatedStudents = [...featuredStudents, ...featuredStudents];
 
 const exhibitionsResponse = await fetch(`${BASE_URL}/items/exhibitions?filter[status][_eq]=published`);
 const exhibitionsData = await exhibitionsResponse.json();
@@ -85,7 +86,11 @@ const whyChooseUs = [
 ];
 ---
 
-<Layout title="Rong Pencil Art Academy">
+<Layout 
+  title="Rong Pencil Art Academy - Fine Art Education in Kolsur"
+  description="Join Rong Pencil Art Academy in Kolsur, North 24 Pargana. We offer expert art education, sketching, painting, and creative courses for all age groups."
+  keywords="art academy Kolsur, pencil sketching training, drawing classes North 24 Parganas, fine art school, painting lessons"
+>
   <main>
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-gray-50 to-amber-50 py-20 px-4 overflow-hidden">
@@ -116,7 +121,7 @@ const whyChooseUs = [
           </div>
           <div class="relative">
             <div class="absolute -inset-4 bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl blur-2xl opacity-20"></div>
-            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=500&fit=crop" alt="Art Class" class="relative rounded-3xl shadow-2xl" />
+            <img src="/assets/art_class.jpg" alt="Art Class" class="relative rounded-3xl shadow-2xl" />
           </div>
         </div>
       </div>
@@ -129,17 +134,20 @@ const whyChooseUs = [
     <OurProgram />
 
     <!-- Featured Students Section -->
-    <section class="py-20 px-4 bg-white">
-      <div class="max-w-7xl mx-auto">
+    <section class="py-20 overflow-hidden bg-white">
+      <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
           <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Students</h2>
           <p class="text-xl text-gray-600 max-w-2xl mx-auto">Meet some of our talented young artists</p>
         </div>
-        <div class="grid md:grid-cols-3 gap-8">
-          {featuredStudents.map((student : any) => (
-            <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+      </div>
+
+      <div class="student-slider-mask">
+        <div class="student-slider-track py-4">
+          {duplicatedStudents.map((student : any) => (
+            <div class="student-card bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
               <div class="relative">
-                <img src={`https://client-directus.siliconpin.in/assets/${student.img}`} alt={student.name} class="w-full h-72 object-cover" />
+                <img src={`https://client-directus.siliconpin.in/assets/${student.img}`} alt={student.name} class="w-full h-72 object-cover" loading="lazy" />
                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
                   <h3 class="text-2xl font-bold text-white">{student.name}</h3>
                   <p class="text-white/90">Age: {Math.floor((new Date().getTime() - new Date(student.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))} years</p>
@@ -156,14 +164,15 @@ const whyChooseUs = [
             </div>
           ))}
         </div>
-        <div class="text-center mt-12">
-          <a href="/student/junior" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
-            View All Students
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </a>
-        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 mt-12 text-center">
+        <a href="/student/junior" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+          View All Students
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
       </div>
     </section>
 
@@ -323,3 +332,77 @@ const whyChooseUs = [
     </section>
   </main>
 </Layout>
+
+<style>
+.student-slider-mask {
+  overflow: hidden;
+  position: relative;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
+
+.student-slider-mask::before,
+.student-slider-mask::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.student-slider-mask::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    white,
+    transparent
+  );
+}
+
+.student-slider-mask::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    white,
+    transparent
+  );
+}
+
+.student-slider-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  animation: student-marquee 45s linear infinite;
+}
+
+.student-slider-track:hover {
+  animation-play-state: paused;
+}
+
+.student-card {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+@keyframes student-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .student-slider-track {
+    animation-duration: 25s;
+    gap: 20px;
+  }
+
+  .student-card {
+    width: 260px;
+  }
+}
+</style>
