@@ -1,20 +1,54 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-const response = await fetch('https://client-directus.siliconpin.in/items/students?filter[status][_eq]=published&filter[type][_eq]=junior') 
-const responseData = await response.json()
-const students = responseData.data;
 
+export async function getStaticPaths() {
+  return [
+    { params: { type: 'junior' } },
+    { params: { type: 'senior' } },
+    { params: { type: 'adult' } },
+  ];
+}
+
+const { type } = Astro.params;
+
+const response = await fetch(`https://client-directus.siliconpin.in/items/students?filter[status][_eq]=published&filter[type][_eq]=${type}`) 
+const responseData = await response.json()
+const students = responseData.data || [];
+
+const displayTitles: Record<string, string> = {
+  junior: "Junior Students",
+  senior: "Senior Students",
+  adult: "Adult Students",
+};
+
+const displayDescriptions: Record<string, string> = {
+  junior: "Meet our talented young artists",
+  senior: "Meet our advanced senior students",
+  adult: "Meet our passionate adult learners",
+};
+
+const seoDescriptions: Record<string, string> = {
+  junior: "Meet our talented young students developing their sketching and painting skills. View their creative profiles and student details.",
+  senior: "Explore advanced student profiles showing sketching, painting, and artwork portfolios at Rong Pencil Art Academy.",
+  adult: "Meet adult learners and art enthusiasts developing their creative talents at Rong Pencil Art Academy.",
+};
+
+const seoKeywords: Record<string, string> = {
+  junior: "junior students art, art school students Kolsur, young painters profiles, sketching training",
+  senior: "senior students art, advanced sketching portfolio, painting gallery Kolsur",
+  adult: "adult art classes, leisure drawing, hobby painters, creative learning",
+};
 ---
 
 <Layout 
-  title="Junior Students - Rong Pencil Art Academy"
-  description="Meet our talented young students developing their sketching and painting skills. View their creative profiles and student details."
-  keywords="junior students art, art school students Kolsur, young painters profiles, sketching training"
+  title={`${displayTitles[type]} - Rong Pencil Art Academy`}
+  description={seoDescriptions[type]}
+  keywords={seoKeywords[type]}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">Junior Students</h1>
-      <p class="text-xl text-gray-600">Meet our talented young artists</p>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">{displayTitles[type]}</h1>
+      <p class="text-xl text-gray-600">{displayDescriptions[type]}</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -53,9 +87,8 @@ const students = responseData.data;
                   </div>
                 )
               }
-              
             </div>
-            <a href={`/student/junior/${student.id}`} class="inline-block bg-amber-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-amber-600 transition-colors">
+            <a href={`/student/${type}/${student.id}`} class="inline-block bg-amber-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-amber-600 transition-colors">
               View Profile
             </a>
           </div>

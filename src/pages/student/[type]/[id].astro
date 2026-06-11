@@ -2,27 +2,42 @@
 import Layout from '../../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const studentResponse = await fetch('https://client-directus.siliconpin.in/items/students?filter[status][_eq]=published&filter[type][_eq]=junior');
+  const studentResponse = await fetch('https://client-directus.siliconpin.in/items/students?filter[status][_eq]=published');
 
   const studentData = await studentResponse.json();
   const students = studentData.data || [];
 
   return students.map((student : any) => ({
-    params: {id: student.id.toString()},
-    props: {student},
+    params: {
+      type: student.type || 'junior',
+      id: student.id.toString()
+    },
+    props: { student },
   }));
 }
 
 const { student } = Astro.props;
-const paintingResponse = await fetch(`https://client-directus.siliconpin.in/items/painting?filter[status][_eq]=published&filter[painted_by][_eq]=${student.id}`);
+const { type, id } = Astro.params;
 
+if (!student || !id) {
+  return Astro.redirect('/404');
+}
+
+const paintingResponse = await fetch(`https://client-directus.siliconpin.in/items/painting?filter[status][_eq]=published&filter[painted_by][_eq]=${student.id}`);
 const paintingData = await paintingResponse.json();
 const paintings = paintingData.data || [];
 
-// 404 if student not found
-if (!student) {
-  return Astro.redirect('/404');
-}
+const displayTitles: Record<string, string> = {
+  junior: "Junior Students",
+  senior: "Senior Students",
+  adult: "Adult Students",
+};
+
+const studentTypes: Record<string, string> = {
+  junior: "Junior Student",
+  senior: "Senior Student",
+  adult: "Adult Student",
+};
 ---
 
 <Layout 
@@ -33,11 +48,11 @@ if (!student) {
 >
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->
-    <a href="/student/junior" class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">
+    <a href={`/student/${type}`} class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
       </svg>
-      Back to Students
+      Back to {displayTitles[type]}
     </a>
 
     <!-- Student Profile Header -->
@@ -53,10 +68,10 @@ if (!student) {
         <div class="md:w-2/3 p-8 lg:p-12">
           <div class="flex flex-wrap items-center gap-3 mb-4">
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-900">{student.name}</h1>
-            <span class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-sm font-semibold">Junior Student</span>
+            <span class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-sm font-semibold">{studentTypes[type]}</span>
           </div>
 
-          <p class="text-gray-600 text-lg mb-8">A talented young artist from Rong Pencil Art Academy.</p>
+          <p class="text-gray-600 text-lg mb-8">A talented artist from Rong Pencil Art Academy.</p>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <div class="bg-white rounded-xl p-4 shadow-sm border">

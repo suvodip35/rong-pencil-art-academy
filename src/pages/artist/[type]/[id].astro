@@ -2,38 +2,52 @@
 import Layout from '../../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const artistResponse = await fetch('https://client-directus.siliconpin.in/items/artist?filter[status][_eq]=published&filter[artist_type][_eq]=senior');
-
+  const artistResponse = await fetch('https://client-directus.siliconpin.in/items/artist?filter[status][_eq]=published');
   const artistData = await artistResponse.json();
   const artists = artistData.data || [];
 
-  return artists.map((artist : any) => ({
-    params: {id: artist.id.toString()},
-    props: {artist},
+  return artists.map((artist: any) => ({
+    params: {
+      type: artist.artist_type,
+      id: artist.id.toString()
+    },
+    props: { artist }
   }));
 }
 
 const { artist } = Astro.props;
-const { id } = Astro.params;
-// console.log('artist', artist);
-if (!id) {
+const { type, id } = Astro.params;
+
+if (!id || !artist) {
   return Astro.redirect('/404');
 }
+
+const displayTitles: Record<string, string> = {
+  junior: "Junior Artists",
+  senior: "Senior Artists",
+  guest: "Guest Artists",
+};
+
+const artistTypes: Record<string, string> = {
+  junior: "Junior Artist",
+  senior: "Senior Artist",
+  guest: "Guest Artist",
+};
 ---
 
 <Layout 
-  title={`${artist.name} - Senior Artist Profile - Rong Pencil Art Academy`}
-  description={`Explore the profile and achievements of senior artist and mentor ${artist.name} at Rong Pencil Art Academy. Specialization: ${artist.specialization}.`}
-  keywords={`${artist.name}, senior artist, art instructor profile, drawing mentor, ${artist.specialization || 'painting'}, Rong Pencil Art Academy`}
+  title={`${artist.name} - ${artistTypes[type]} Profile - Rong Pencil Art Academy`}
+  description={`Profile of ${artistTypes[type].toLowerCase()} ${artist.name} at Rong Pencil Art Academy. Specialization: ${artist.specialization}. Read about their experience, achievements, and notable works.`}
+  keywords={`${artist.name}, ${artistTypes[type].toLowerCase()}, ${artist.specialization || 'fine art'}, art mentor, Rong Pencil Art Academy`}
   ogImage={`https://client-directus.siliconpin.in/assets/${artist.img}`}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->
-    <a href="/artist/senior" class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">
+    <a href={`/artist/${type}`} class="inline-flex items-center text-amber-600 hover:text-amber-700 mb-8 font-semibold">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
       </svg>
-      Back to Senior Artists
+      Back to {displayTitles[type]}
     </a>
 
     <!-- Artist Profile Header -->
@@ -60,12 +74,12 @@ if (!id) {
             </h1>
 
             <span class="bg-amber-100 text-amber-700 px-4 py-1 rounded-full text-sm font-semibold">
-              Professional Artist
+              {artistTypes[type]}
             </span>
           </div>
 
           <p class="text-gray-600 text-lg mb-8">
-            Experienced artist and mentor at Rong Pencil Art Academy.
+            {type === 'guest' ? 'Visiting mentor and guest artist' : 'Experienced artist and mentor'} at Rong Pencil Art Academy.
           </p>
 
           {/* Stats */}
