@@ -1,0 +1,16 @@
+# Allow all crawlers to access the site
+User-agent: *
+Allow: /
+
+# Explicitly allow social media scrapers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: IA_Archiver
+Allow: /

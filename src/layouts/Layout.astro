@@ -11,8 +11,20 @@ export interface Props {
 
 const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage } = Astro.props;
 
+// Determine absolute base URL
+const siteUrl = Astro.site 
+  ? Astro.site.href 
+  : (import.meta.env.PUBLIC_SITE_URL || 'https://rong-pencil.siliconpin.net');
+
+// Resolve the canonical URL for the current page
+const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
+
 const defaultLogo = "/assets/logos/rong-pencil-logo-croped-resized.png";
 const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultLogo : ogImage;
+
+// Make the OG image URL absolute
+const ogImageURL = new URL(resolvedOgImage, siteUrl).href;
+const ogImageType = ogImageURL.toLowerCase().includes('.png') ? 'image/png' : 'image/jpeg';
 ---
 
 <!DOCTYPE html>
@@ -29,18 +41,24 @@ const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.in
 		<meta name="description" content={description} />
 		<meta name="keywords" content={keywords} />
 		<meta name="author" content="Rong Pencil Art Academy" />
+		<link rel="canonical" href={canonicalURL} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={resolvedOgImage} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:image:secure_url" content={ogImageURL} />
+		<meta property="og:image:type" content={ogImageType} />
+		<meta property="og:site_name" content="Rong Pencil Art Academy" />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalURL} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={resolvedOgImage} />
+		<meta property="twitter:image" content={ogImageURL} />
 	</head>
 	<body class="bg-gray-50">
 		<MainHeader client:load />

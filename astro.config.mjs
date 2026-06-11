@@ -8,7 +8,7 @@ import vue from "@astrojs/vue";
 
 // https://astro.build/config
 
-// https://astro.build/config
 export default defineConfig({
+  site: process.env.SITE_URL || 'https://rong-pencil.siliconpin.net',
   integrations: [tailwind(), vue()]
 });
