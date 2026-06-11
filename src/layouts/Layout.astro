@@ -1,0 +1,63 @@
+---
+import MainHeader from '../components/MainHeader.vue';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+	title: string;
+	description?: string;
+	keywords?: string;
+	ogImage?: string;
+}
+
+const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage = "/assets/logos/rong-pencil-logo-croped-resized.png" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<!-- <link rel="icon" type="image/svg+xml" href="/favicon.ico" /> -->
+		<link rel="icon" href="/favicon.ico" sizes="any" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+
+		<!-- SEO Meta Tags -->
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
+		<meta name="author" content="Rong Pencil Art Academy" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={ogImage} />
+	</head>
+	<body class="bg-gray-50">
+		<MainHeader client:load />
+		<main class="min-h-screen">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+<style is:global>
+	/* :root {
+		--accent: 124, 58, 237;
+		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
+	}
+	html {
+		font-family: system-ui, sans-serif;
+		background-color: #F6F6F6;
+	}
+	code {
+		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+			Bitstream Vera Sans Mono, Courier New, monospace;
+	} */
+</style>

@@ -1,0 +1,325 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HomePageMenuItems from '../components/HomePageMenuItems.astro';
+import OurProgram from '../components/OurProgram.astro';
+
+const BASE_URL = 'https://client-directus.siliconpin.in';
+const response = await fetch(`${BASE_URL}/items/students?filter[status][_eq]=published&sort=-date_created&limit=6`);
+const studentsData = await response.json();
+const featuredStudents = studentsData.data;
+
+const exhibitionsResponse = await fetch(`${BASE_URL}/items/exhibitions?filter[status][_eq]=published`);
+const exhibitionsData = await exhibitionsResponse.json();
+const exhibitions = exhibitionsData.data;
+
+// Fetch paintings with student names
+const paintingsResponse = await fetch(`${BASE_URL}/items/painting?filter[status][_eq]=published&fields=*,painted_by.name`);
+const paintingsData = await paintingsResponse.json();
+const paintings = paintingsData.data || [];
+
+const mergedArtworks = [
+  ...exhibitions.map((ex: any) => ({
+    type: 'exhibition',
+    id: ex.id,
+    title: ex.title,
+    image: `${BASE_URL}/assets/${ex.img}`,
+    category: ex.exhibition_status || 'Exhibition',
+    artist: ex.location || 'Academy',
+    description: ex.description || '',
+    date_created: ex.date_created,
+    year: ex.date ? new Date(ex.date).getFullYear() : ''
+  })),
+  ...paintings.map((pt: any) => ({
+    type: 'painting',
+    id: pt.id,
+    title: pt.paint_name,
+    image: `${BASE_URL}/assets/${pt.img}`,
+    category: pt.medium || 'Artwork',
+    artist: pt.painted_by?.name || 'Unknown Artist',
+    description: '',
+    date_created: pt.date_created,
+    year: pt.year || ''
+  }))
+];
+const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+// console.log('Artworks:', artworks);
+const testimonials = [
+  {
+    name: "Priya's Mother",
+    text: "My daughter has flourished at Rong Pencil Art Academy. The teachers are patient and skilled, and her artwork has improved tremendously.",
+    role: "Parent"
+  },
+  {
+    name: "Aarav Roy",
+    text: "The academy has helped me discover my passion for art. The environment is supportive and the guidance is exceptional.",
+    role: "Student"
+  },
+  {
+    name: "Mrs. Sharma",
+    text: "As a parent, I'm thrilled with the progress my child has made. The academy provides excellent art education with personal attention.",
+    role: "Parent"
+  }
+];
+
+const whyChooseUs = [
+  {
+    title: "Expert Faculty",
+    description: "Learn from experienced artists and educators with years of teaching experience",
+    icon: "👨‍🎨"
+  },
+  {
+    title: "Small Class Sizes",
+    description: "Personal attention to every student for better learning outcomes",
+    icon: "👥"
+  },
+  {
+    title: "Modern Facilities",
+    description: "Well-equipped studios with all necessary art supplies and tools",
+    icon: "🏛️"
+  },
+  {
+    title: "Exhibition Opportunities",
+    description: "Regular exhibitions to showcase student talent and build confidence",
+    icon: "🎭"
+  }
+];
+---
+
+<Layout title="Rong Pencil Art Academy">
+  <main>
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-gray-50 to-amber-50 py-20 px-4 overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-72 h-72 bg-amber-400 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 w-72 h-72 bg-orange-400 rounded-full blur-3xl"></div>
+      </div>
+      <div class="max-w-7xl mx-auto relative">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Rong <span class="text-amber-600">Pencil</span> Art Academy
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+              Rong Pencil Art Academy is dedicated to fostering artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <a href="/student/junior" class="bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+                View Students
+              </a>
+              <a href="/gallery" class="bg-white text-gray-800 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl border border-gray-200">
+                Explore Gallery
+              </a>
+              <a href="/admission" class="bg-white text-amber-600 px-8 py-4 rounded-xl font-semibold hover:bg-amber-50 transition-all shadow-lg hover:shadow-xl border border-amber-200">
+                Apply for Admission
+              </a>
+            </div>
+          </div>
+          <div class="relative">
+            <div class="absolute -inset-4 bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl blur-2xl opacity-20"></div>
+            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=500&fit=crop" alt="Art Class" class="relative rounded-3xl shadow-2xl" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HomePageMenuItems Section -->
+    <HomePageMenuItems />
+
+    <!-- Programs Section -->
+    <OurProgram />
+
+    <!-- Featured Students Section -->
+    <section class="py-20 px-4 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Students</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Meet some of our talented young artists</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          {featuredStudents.map((student : any) => (
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+              <div class="relative">
+                <img src={`https://client-directus.siliconpin.in/assets/${student.img}`} alt={student.name} class="w-full h-72 object-cover" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
+                  <h3 class="text-2xl font-bold text-white">{student.name}</h3>
+                  <p class="text-white/90">Age: {Math.floor((new Date().getTime() - new Date(student.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))} years</p>
+                </div>
+              </div>
+              <div class="p-6">
+                <a href={`/student/junior/${student.id}`} class="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700 transition-colors">
+                  View Profile
+                  <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/student/junior" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+            View All Students
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exhibition Section -->
+    <section class="py-20 px-4 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Exhibitions</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Discover our art exhibitions and showcases</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          {exhibitions.map((exhibition : any) => (
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 group">
+              <div class="relative overflow-hidden">
+                <img src={`https://client-directus.siliconpin.in/assets/${exhibition.img}`} alt={exhibition.title} class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class={`absolute top-4 right-4 bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-semibold ${exhibition.exhibition_status === 'Upcoming' ? 'bg-amber-500' : exhibition.exhibition_status === 'Completed' ? 'bg-green-500' : 'bg-gray-500'}`}>
+                  {exhibition.exhibition_status}
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{exhibition.title}</h3>
+                <div class="space-y-2 text-gray-600 mb-4">
+                  <p class="flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    {exhibition.date}
+                  </p>
+                  <p class="flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    {exhibition.location}
+                  </p>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">{exhibition.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/exhibition" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+            View All Exhibitions
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="py-20 px-4 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">What makes Rong Pencil Art Academy special</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {whyChooseUs.map((item) => (
+            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 text-center">
+              <div class="text-5xl mb-4">{item.icon}</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+              <p class="text-gray-600 leading-relaxed">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 px-4 bg-white">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">What People Say</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Hear from our students and parents</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial) => (
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-amber-100">
+              <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                  {testimonial.name.charAt(0)}
+                </div>
+                <div class="ml-4">
+                  <h4 class="font-bold text-gray-900">{testimonial.name}</h4>
+                  <p class="text-amber-600 text-sm font-medium">{testimonial.role}</p>
+                </div>
+              </div>
+              <p class="text-gray-700 leading-relaxed italic">"{testimonial.text}"</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Preview Section -->
+    <section class="py-20 px-4 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Gallery Preview</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">A glimpse into our artistic creations</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {artworks.slice(0, 5).map((artwork: any, index: number) => (
+            <div class={`${index === 0 ? 'col-span-2 row-span-2' : ''} relative rounded-2xl overflow-hidden group`}>
+              <img src={artwork.image} alt={artwork.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-end justify-end p-6">
+                <span class="text-white font-semibold text-lg">{artwork.title}</span>
+                <span class="text-white/80 text-sm">{artwork.artist}</span>
+                <span class="text-amber-300 text-xs mt-1">{artwork.category}</span>
+              </div>
+              {artwork.type === 'exhibition' && (
+                <div class={`absolute top-4 right-4 text-white px-3 py-1 rounded-full text-xs font-semibold ${artwork.category === 'Upcoming' ? 'bg-amber-500' : artwork.category === 'Completed' ? 'bg-green-500' : 'bg-gray-500'}`}>
+                  {artwork.category}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-12">
+          <a href="/gallery" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+            View Full Gallery
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4 bg-gradient-to-br from-amber-600 to-orange-600 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+      </div>
+      <div class="max-w-4xl mx-auto text-center relative">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Start Your Art Journey?</h2>
+        <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">Join Rong Pencil Art Academy and unleash your creativity with our expert guidance</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/admission" class="inline-flex items-center bg-white text-amber-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all shadow-2xl">
+            Apply for Admission
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+          <a href="/contact" class="inline-flex items-center bg-amber-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-800 transition-all shadow-2xl">
+            Contact Us
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

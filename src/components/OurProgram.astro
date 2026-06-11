@@ -1,0 +1,41 @@
+---
+const programs = [
+  { title: "Pencil Sketching", icon: "✏️" },
+  { title: "Pastel Drawing", icon: "🎨" },
+  { title: "Watercolour Drawing", icon: "🖌️" },
+  { title: "Oil Colour Painting", icon: "🖼️" },
+  { title: "Poster Colour Painting", icon: "🌈" },
+  { title: "Tempera Painting", icon: "🎭" },
+  { title: "Acrylic Painting", icon: "🎨" },
+  { title: "Dry Pastel Painting", icon: "🎨" },
+  { title: "Pen and Ink Drawing", icon: "✏️" },
+  { title: "Still Life Drawing", icon: "🎨" },
+  { title: "Outdoor Study Drawing", icon: "🌳" },
+  { title: "Foliage Drawing", icon: "🍃" },
+  { title: "Figure Study Drawing", icon: "👤" },
+  { title: "Charcoal Drawing", icon: "⚫" },
+  { title: "Antique Study Drawing", icon: "🏛️" },
+  { title: "Tie and Dye Art", icon: "🧵" },
+  { title: "Crafts", icon: "✂️" },
+  { title: "Sculpture", icon: "🗿" },
+  { title: "Applied Art", icon: "💡" },
+  { title: "Print Making", icon: "🖨️" }
+];
+---
+<section class="py-16 px-4 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Programs</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">Discover the art forms we teach with expert guidance</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {programs.map((program) => (
+            <div class="bg-[#fdfbf2] p-4 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border hover:border-[#d97706]">
+              <div class="text-5xl mb-4">{program.icon}</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">{program.title}</h3>
+              {/* <p class="text-gray-600 leading-relaxed">{program.description}</p> */}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
