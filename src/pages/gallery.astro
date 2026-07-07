@@ -1,47 +1,31 @@
 ---
 import Layout from '../layouts/Layout.astro';
 const BASE_URL = 'https://client-directus.siliconpin.in';
-
-// Fetch exhibitions
-const exhibitionsResponse = await fetch(`${BASE_URL}/items/exhibitions?filter[status][_eq]=published`);
-const exhibitionsData = await exhibitionsResponse.json();
-const exhibitions = exhibitionsData.data || [];
-
-// Fetch paintings with student names
-const paintingsResponse = await fetch(`${BASE_URL}/items/painting?filter[status][_eq]=published&fields=*,painted_by.name`);
+const paintingsResponse = await fetch(`${BASE_URL}/items/gallery?filter[status][_eq]=published`);
 const paintingsData = await paintingsResponse.json();
 const paintings = paintingsData.data || [];
 
-// Merge exhibitions and paintings into a single array
-const mergedArtworks = [
-  ...exhibitions.map((ex: any) => ({
-    type: 'exhibition',
-    id: ex.id,
-    title: ex.title,
-    image: `${BASE_URL}/assets/${ex.img}`,
-    category: ex.exhibition_status || 'Exhibition',
-    artist: ex.location || 'Academy',
-    description: ex.description || '',
-    date_created: ex.date_created,
-    year: ex.date ? new Date(ex.date).getFullYear() : ''
-  })),
-  ...paintings.map((pt: any) => ({
-    type: 'painting',
-    id: pt.id,
-    title: pt.paint_name,
-    image: `${BASE_URL}/assets/${pt.img}`,
-    category: pt.medium || 'Artwork',
-    artist: pt.painted_by?.name || 'Unknown Artist',
-    description: '',
-    date_created: pt.date_created,
-    year: pt.year || ''
-  }))
-];
+// Sort paintings by year descending (newest first)
+paintings.sort((a: any, b: any) => {
+  const yearA = parseInt(a.year) || 0;
+  const yearB = parseInt(b.year) || 0;
+  return yearB - yearA;
+});
+// Group paintings by program for sequential sections
+const programs = [...new Set(paintings.map((p: any) => p.program).filter(Boolean))];
 
-// Sort by date_created (newest first)
-const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+let sortedPaintings: any[] = [];
+const groupedPaintings = programs.map(program => {
+  const artworks = paintings.filter((p: any) => p.program === program);
+  sortedPaintings = [...sortedPaintings, ...artworks];
+  return { title: program, artworks };
+});
 
-// console.log('Merged and sorted artworks:', artworks);
+const otherArtworks = paintings.filter((p: any) => !p.program);
+if (otherArtworks.length > 0) {
+  sortedPaintings = [...sortedPaintings, ...otherArtworks];
+  groupedPaintings.push({ title: 'Other Artworks', artworks: otherArtworks });
+}
 ---
 
 <Layout 
@@ -55,36 +39,41 @@ const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created
       <p class="text-xl text-gray-600">Explore beautiful artworks created by our talented artists</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {artworks.map((artwork: any, index: any) => (
-        <div class="artwork-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group cursor-pointer"
-             data-index={index}>
-          <div class="relative overflow-hidden">
-            <img
-              src={artwork.image}
-              alt={artwork.title}
-              class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
-            />
-            <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-              {artwork.category}
-            </div>
-            <div class="absolute top-4 right-4 bg-white/90 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">
-              {artwork.type === 'exhibition' ? '🎭 Exhibition' : '🎨 Painting'}
-            </div>
-            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">{artwork.title}</h3>
-            <p class="text-gray-600">{artwork.type === 'exhibition' ? `at ${artwork.artist}` : `by ${artwork.artist}`}</p>
-            {artwork.year && <p class="text-sm text-gray-500 mt-1">{artwork.year}</p>}
-          </div>
+    {groupedPaintings.map((group) => (
+      <div class="mb-16">
+        <div class="flex items-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-900">{group.title}</h2>
+          <div class="ml-4 flex-grow h-px bg-amber-500/30"></div>
         </div>
-      ))}
-    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {group.artworks.map((artwork: any) => (
+            <div class="artwork-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group cursor-pointer"
+                 data-id={artwork.id}>
+              <div class="relative overflow-hidden">
+                <img
+                  src={`${BASE_URL}/assets/${artwork.image}`}
+                  alt={artwork.title}
+                  class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                /> 
+                <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  {artwork.type}
+                </div>
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{artwork.title}</h3>
+                {artwork.location && <p class="text-gray-600">{`at ${artwork.location}`}</p>}
+                {artwork.year && <p class="text-sm text-gray-500 mt-1">{artwork.year}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
   </div>
 
   <!-- Lightbox -->
@@ -118,7 +107,7 @@ const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created
     </div>
   </div>
 
-  <script define:vars={{ artworks }}>
+  <script define:vars={{ sortedPaintings, BASE_URL }}>
     let currentIndex = 0;
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
@@ -128,8 +117,9 @@ const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created
     const lightboxType = document.getElementById('lightbox-type');
 
     // Make functions globally accessible
-    window.openLightbox = function(index) {
-      currentIndex = index;
+    window.openLightbox = function(id) {
+      currentIndex = sortedPaintings.findIndex(p => p.id === id);
+      if (currentIndex === -1) return;
       updateLightboxContent();
       lightbox.classList.remove('hidden');
       lightbox.classList.add('flex');
@@ -145,28 +135,29 @@ const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created
     window.navigateImage = function(direction) {
       currentIndex += direction;
       if (currentIndex < 0) {
-        currentIndex = artworks.length - 1;
-      } else if (currentIndex >= artworks.length) {
+        currentIndex = sortedPaintings.length - 1;
+      } else if (currentIndex >= sortedPaintings.length) {
         currentIndex = 0;
       }
       updateLightboxContent();
     };
 
     function updateLightboxContent() {
-      const artwork = artworks[currentIndex];
-      lightboxImage.src = artwork.image;
+      const artwork = sortedPaintings[currentIndex];
+      if (!artwork) return;
+      lightboxImage.src = `${BASE_URL}/assets/${artwork.image}`;
       lightboxImage.alt = artwork.title;
       lightboxTitle.textContent = artwork.title;
-      lightboxArtist.textContent = artwork.type === 'exhibition' ? `at ${artwork.artist}` : `by ${artwork.artist}`;
-      lightboxCategory.textContent = artwork.category;
-      lightboxType.textContent = artwork.type === 'exhibition' ? '🎭 Exhibition' : '🎨 Painting';
+      lightboxArtist.textContent = artwork.location ? `at ${artwork.location}` : '';
+      lightboxCategory.textContent = artwork.program || '';
+      lightboxType.textContent = artwork.type ? `🎨 ${artwork.type}` : '';
     }
 
     // Add event listeners to artwork cards
     document.querySelectorAll('.artwork-card').forEach(card => {
       card.addEventListener('click', function() {
-        const index = parseInt(this.getAttribute('data-index'));
-        window.openLightbox(index);
+        const id = parseInt(this.getAttribute('data-id'));
+        window.openLightbox(id);
       });
     });
 

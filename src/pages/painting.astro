@@ -39,8 +39,10 @@ const paintings = paintingsData.data
           <div class="p-6">
             <h3 class="text-xl font-bold text-gray-900 mb-2">{painting.paint_name}</h3>
             <div class="space-y-1 text-gray-600">
-              <p><span class="font-semibold text-amber-700">Artist:</span> {painting.painted_by.name}</p>
+              <!-- <p><span class="font-semibold text-amber-700">Artist:</span> {painting.painted_by.name}</p> -->
               <p><span class="font-semibold text-amber-700">Size:</span> {painting.size}</p>
+              <p><span class="font-semibold text-amber-700">Medium:</span> {painting.medium}</p>
+              <p><span class="font-semibold text-amber-700">Year:</span> {painting.year}</p>
             </div>
           </div>
         </div>
@@ -69,11 +71,15 @@ const paintings = paintingsData.data
     </button>
 
     <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
-      <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg" />
-      <div class="mt-4 text-center text-white">
-        <h3 id="lightbox-title" class="text-2xl font-bold mb-1"></h3>
-        <p id="lightbox-artist" class="text-gray-300"></p>
-        <p id="lightbox-medium" class="text-amber-400 font-semibold mt-1"></p>
+      <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl" />
+      <div class="mt-6 text-center text-white bg-black/50 px-8 py-4 rounded-xl backdrop-blur-sm">
+        <h3 id="lightbox-title" class="text-2xl font-bold mb-2"></h3>
+        <p id="lightbox-artist" class="text-gray-300 text-lg"></p>
+        <div class="flex items-center justify-center gap-4 mt-3">
+          <p id="lightbox-medium" class="text-amber-400 font-semibold"></p>
+          <span id="lightbox-dot" class="text-gray-500 hidden">•</span>
+          <p id="lightbox-size" class="text-amber-400 font-semibold"></p>
+        </div>
       </div>
     </div>
   </div>
@@ -85,6 +91,8 @@ const paintings = paintingsData.data
     const lightboxTitle = document.getElementById('lightbox-title');
     const lightboxArtist = document.getElementById('lightbox-artist');
     const lightboxMedium = document.getElementById('lightbox-medium');
+    const lightboxSize = document.getElementById('lightbox-size');
+    const lightboxDot = document.getElementById('lightbox-dot');
 
     // Make functions globally accessible
     window.openLightbox = function(index) {
@@ -116,8 +124,22 @@ const paintings = paintingsData.data
       lightboxImage.src = `https://client-directus.siliconpin.in/assets/${painting.img}`;
       lightboxImage.alt = painting.paint_name;
       lightboxTitle.textContent = painting.paint_name;
-      lightboxArtist.textContent = `by ${painting.painted_by.name}`;
-      lightboxMedium.textContent = `${painting.medium} • ${painting.size}`;
+      
+      // Safely handle missing artist data
+      if (painting.painted_by && painting.painted_by.name) {
+        lightboxArtist.textContent = `Artist: ${painting.painted_by.name}`;
+      } else {
+        lightboxArtist.textContent = '';
+      }
+
+      lightboxMedium.textContent = painting.medium || '';
+      lightboxSize.textContent = painting.size || '';
+
+      if (painting.medium && painting.size) {
+        lightboxDot.classList.remove('hidden');
+      } else {
+        lightboxDot.classList.add('hidden');
+      }
     }
 
     // Add event listeners to painting cards

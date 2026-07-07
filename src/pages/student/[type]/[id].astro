@@ -6,7 +6,6 @@ export async function getStaticPaths() {
 
   const studentData = await studentResponse.json();
   const students = studentData.data || [];
-
   return students.map((student : any) => ({
     params: {
       type: student.type || 'junior',
