@@ -12,9 +12,28 @@ const paintings = paintingsData.data
   keywords="watercolor paintings, oil canvas art, student paintings Kolsur, acrylic paintings portfolio"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">Paintings</h1>
-      <p class="text-xl text-gray-600">Beautiful paintings created by our artists</p>
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-amber-50/50 to-transparent border border-amber-100 mb-16">
+      <!-- Subtle background decorations -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-32 -right-32 w-[32rem] h-[32rem] bg-amber-200/30 rounded-full mix-blend-multiply filter blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-32 w-[24rem] h-[24rem] bg-orange-200/20 rounded-full mix-blend-multiply filter blur-3xl"></div>
+      </div>
+      
+      <div class="relative z-10 px-6 py-16 sm:px-12 sm:py-20 text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center justify-center space-x-3 mb-6">
+          <span class="h-px w-8 bg-amber-300"></span>
+          <span class="text-amber-700 text-sm font-semibold tracking-widest uppercase">Our Collection</span>
+          <span class="h-px w-8 bg-amber-300"></span>
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+          Explore the <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-500">Paintings</span>
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-gray-600 leading-relaxed font-light">
+          Discover a beautiful collection of fine art created by our talented artists and students. From delicate watercolors to rich oil canvases, immerse yourself in our creative expressions.
+        </p>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -25,11 +44,10 @@ const paintings = paintingsData.data
             <img
               src={`https://client-directus.siliconpin.in/assets/${painting.img}`}
               alt={painting.paint_name}
+              loading="lazy"
               class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
             />
-            <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-              {painting.medium}
-            </div>
+            {painting.medium && <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">{painting.medium}</div>}
             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
@@ -37,12 +55,12 @@ const paintings = paintingsData.data
             </div>
           </div>
           <div class="p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-2">{painting.paint_name}</h3>
+            { painting.paint_name && <h3 class="text-xl font-bold text-gray-900 mb-2">{painting.paint_name}</h3>}
             <div class="space-y-1 text-gray-600">
-              <!-- <p><span class="font-semibold text-amber-700">Artist:</span> {painting.painted_by.name}</p> -->
-              <p><span class="font-semibold text-amber-700">Size:</span> {painting.size}</p>
-              <p><span class="font-semibold text-amber-700">Medium:</span> {painting.medium}</p>
-              <p><span class="font-semibold text-amber-700">Year:</span> {painting.year}</p>
+              { painting.size && <p><span class="font-semibold text-amber-700">Size:</span> {painting.size}</p>}
+              { painting.painted_by.name && <p><span class="font-semibold text-amber-700">Artist:</span> {painting.painted_by.name}</p>}
+              { painting.medium && <p><span class="font-semibold text-amber-700">Medium:</span> {painting.medium}</p>}
+              { painting.year && <p><span class="font-semibold text-amber-700">Year:</span> {painting.year}</p>}
             </div>
           </div>
         </div>
