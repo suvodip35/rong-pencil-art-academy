@@ -5,7 +5,7 @@ export async function getStaticPaths() {
   const teacherResponse = await fetch('https://client-directus.siliconpin.in/items/teacher?filter[status][_eq]=published');
   const teacherData = await teacherResponse.json();
   const teachers = teacherData.data || [];
-  // console.log(teachers)
+  console.log(teachers)
   return teachers.map((teacher: any) => {
     const type = teacher.teacher_type ? teacher.teacher_type.replace('_teacher', '') : 'school';
     return {
@@ -134,6 +134,15 @@ const keywords = isSchool
               <div class="mb-4">
                 <span class="font-semibold text-amber-700">Experience:</span>
                 <span class="ml-2 text-gray-700">{teacher.experience} Years</span>
+              </div>
+            )
+          }
+
+          {
+            teacher.highest_qualification && (
+              <div class="mb-4">
+                <span class="font-semibold text-amber-700">Highest Qualification:</span>
+                <span class="ml-2 text-gray-700">{teacher.highest_qualification}</span>
               </div>
             )
           }
