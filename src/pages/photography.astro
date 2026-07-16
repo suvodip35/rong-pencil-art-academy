@@ -1,50 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const BASE_PATH = 'https://client-directus.siliconpin.in';
+const response = await fetch(`${BASE_PATH}/items/photography?filter[status][_eq]=published`)
+const data = await response.json()
+const photos = data.data
 
-const photos = [
-  {
-    id: 1,
-    title: "Golden Hour Portrait",
-    photographer: "Rohan Chakraborty",
-    category: "Portrait",
-    image: "/assets/photography_portrait.jpg"
-  },
-  {
-    id: 2,
-    title: "Nature's Beauty",
-    photographer: "Priya Sharma",
-    category: "Nature",
-    image: "/assets/photography_nature.jpg"
-  },
-  {
-    id: 3,
-    title: "Street Life",
-    photographer: "Aarav Roy",
-    category: "Street",
-    image: "/assets/photography_street.jpg"
-  },
-  {
-    id: 4,
-    title: "Architecture",
-    photographer: "Ananya Das",
-    category: "Architecture",
-    image: "/assets/photography_architecture.jpg"
-  },
-  {
-    id: 5,
-    title: "Wildlife Capture",
-    photographer: "Sneha Mukherjee",
-    category: "Wildlife",
-    image: "/assets/photography_wildlife.jpg"
-  },
-  {
-    id: 6,
-    title: "Macro World",
-    photographer: "Dev Adhikari",
-    category: "Macro",
-    image: "/assets/photography_macro.jpg"
-  }
-];
 ---
 
 <Layout 
@@ -59,24 +19,136 @@ const photos = [
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {photos.map((photo) => (
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+      {photos.map((photo: any) => (
+        <div class="photo-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group cursor-pointer" data-id={photo.id}>
           <div class="relative overflow-hidden">
             <img 
-              src={photo.image} 
+              src={`${BASE_PATH}/assets/${photo.image}`} 
               alt={photo.title}
               class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
             />
-            <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-              {photo.category}
+            {
+              photo.category && (
+                <div class="absolute top-4 left-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">{photo.category}</div>
+              )
+            }
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+              </svg>
             </div>
           </div>
           <div class="p-6">
             <h3 class="text-xl font-bold text-gray-900 mb-2">{photo.title}</h3>
-            <p class="text-gray-600">by {photo.photographer}</p>
+            {
+              photo.photography_by && (
+                <p class="text-gray-600">by {photo.photography_by}</p>
+              )
+            }
           </div>
         </div>
       ))}
     </div>
   </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <button onclick="navigateImage(-1)" class="absolute left-4 text-white hover:text-gray-300 transition-colors z-10">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+
+    <button onclick="navigateImage(1)" class="absolute right-4 text-white hover:text-gray-300 transition-colors z-10">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+
+    <div class="max-w-5xl max-h-[90vh] flex flex-col items-center">
+      <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg" />
+      <div class="mt-4 text-center text-white">
+        <h3 id="lightbox-title" class="text-2xl font-bold mb-1"></h3>
+        <p id="lightbox-artist" class="text-gray-300"></p>
+        <p id="lightbox-category" class="text-amber-400 font-semibold mt-1"></p>
+      </div>
+    </div>
+  </div>
+
+  <script define:vars={{ photos, BASE_PATH }}>
+    let currentIndex = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxArtist = document.getElementById('lightbox-artist');
+    const lightboxCategory = document.getElementById('lightbox-category');
+
+    // Make functions globally accessible
+    window.openLightbox = function(id) {
+      currentIndex = photos.findIndex(p => p.id === id);
+      if (currentIndex === -1) return;
+      updateLightboxContent();
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeLightbox = function() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    };
+
+    window.navigateImage = function(direction) {
+      currentIndex += direction;
+      if (currentIndex < 0) {
+        currentIndex = photos.length - 1;
+      } else if (currentIndex >= photos.length) {
+        currentIndex = 0;
+      }
+      updateLightboxContent();
+    };
+
+    function updateLightboxContent() {
+      const photo = photos[currentIndex];
+      if (!photo) return;
+      lightboxImage.src = `${BASE_PATH}/assets/${photo.image}`;
+      lightboxImage.alt = photo.title;
+      lightboxTitle.textContent = photo.title;
+      lightboxArtist.textContent = photo.photography_by ? `by ${photo.photography_by}` : '';
+      lightboxCategory.textContent = photo.category || '';
+    }
+
+    // Add event listeners to photo cards
+    document.querySelectorAll('.photo-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const id = parseInt(this.getAttribute('data-id'));
+        window.openLightbox(id);
+      });
+    });
+
+    // Close lightbox on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        window.closeLightbox();
+      } else if (e.key === 'ArrowLeft') {
+        window.navigateImage(-1);
+      } else if (e.key === 'ArrowRight') {
+        window.navigateImage(1);
+      }
+    });
+
+    // Close lightbox when clicking outside the image
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        window.closeLightbox();
+      }
+    });
+  </script>
 </Layout>
