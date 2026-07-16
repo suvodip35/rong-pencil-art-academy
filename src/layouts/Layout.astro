@@ -14,12 +14,12 @@ const { title, description = "Rong Pencil Art Academy - Nurturing artistic talen
 // Determine absolute base URL
 const siteUrl = Astro.site 
   ? Astro.site.href 
-  : (import.meta.env.PUBLIC_SITE_URL || 'https://rong-pencil.siliconpin.net');
+  : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
 
 // Resolve the canonical URL for the current page
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 
-const defaultLogo = "/assets/logos/rong-pencil-logo-croped-resized.png";
+const defaultLogo = "/assets/logos/rong-pencil-banner.jpg";
 const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultLogo : ogImage;
 
 // Make the OG image URL absolute
