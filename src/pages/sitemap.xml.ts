@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 const BASE_URL = 'https://client-directus.siliconpin.in';
-const SITE_URL = 'https://rong-pencil.siliconpin.net';
+const SITE_URL = 'https://rongpencilartacademy.in';
 
 export const get: APIRoute = async () => {
   try {
@@ -73,53 +73,53 @@ export const get: APIRoute = async () => {
     const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${uniquePages
-  .map(page => {
-    // Determine priority and frequency
-    let priority = '0.5';
-    let changefreq = 'weekly';
+        .map(page => {
+          // Determine priority and frequency
+          let priority = '0.5';
+          let changefreq = 'weekly';
 
-    if (page === '') {
-      priority = '1.0';
-      changefreq = 'daily';
-    } else if (
-      [
-        '/about',
-        '/admission',
-        '/contact',
-        '/exhibition',
-        '/gallery',
-        '/painting',
-        '/photography',
-        '/sale',
-      ].includes(page)
-    ) {
-      priority = '0.8';
-      changefreq = 'weekly';
-    } else if (
-      page.startsWith('/artist/') &&
-      !page.split('/').filter(Boolean)[2]
-    ) {
-      // It's a list page like /artist/senior
-      priority = '0.7';
-    } else if (
-      page.startsWith('/student/') &&
-      !page.split('/').filter(Boolean)[2]
-    ) {
-      priority = '0.7';
-    } else if (
-      page.startsWith('/teacher/') &&
-      !page.split('/').filter(Boolean)[2]
-    ) {
-      priority = '0.7';
-    }
+          if (page === '') {
+            priority = '1.0';
+            changefreq = 'daily';
+          } else if (
+            [
+              '/about',
+              '/admission',
+              '/contact',
+              '/exhibition',
+              '/gallery',
+              '/painting',
+              '/photography',
+              '/sale',
+            ].includes(page)
+          ) {
+            priority = '0.8';
+            changefreq = 'weekly';
+          } else if (
+            page.startsWith('/artist/') &&
+            !page.split('/').filter(Boolean)[2]
+          ) {
+            // It's a list page like /artist/senior
+            priority = '0.7';
+          } else if (
+            page.startsWith('/student/') &&
+            !page.split('/').filter(Boolean)[2]
+          ) {
+            priority = '0.7';
+          } else if (
+            page.startsWith('/teacher/') &&
+            !page.split('/').filter(Boolean)[2]
+          ) {
+            priority = '0.7';
+          }
 
-    return `  <url>
+          return `  <url>
     <loc>${SITE_URL}${page}</loc>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
-  })
-  .join('\n')}
+        })
+        .join('\n')}
 </urlset>`;
 
     return new Response(sitemapXml, {
