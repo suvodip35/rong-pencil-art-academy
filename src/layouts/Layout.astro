@@ -59,6 +59,16 @@ const ogImageType = ogImageURL.toLowerCase().includes('.png') ? 'image/png' : 'i
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={ogImageURL} />
+
+		<!-- Google tag (gtag.js) -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WE7QRHXXF7"></script>
+		<script is:inline>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'G-WE7QRHXXF7');
+		</script>
 	</head>
 	<body class="bg-gray-50">
 		<MainHeader client:load />
