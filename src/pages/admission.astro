@@ -242,6 +242,11 @@ import Layout from '../layouts/Layout.astro';
                   </div>
                   
                   <div>
+                    <label for="whatsapp" class="block text-sm font-semibold text-gray-700 mb-3">WhatsApp Number</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all hover:border-amber-300 shadow-sm" placeholder="+91 XXXXX XXXXX" />
+                  </div>
+                  
+                  <div class="md:col-span-2">
                     <label for="email" class="block text-sm font-semibold text-gray-700 mb-3">Email Address</label>
                     <input type="email" id="email" name="email" class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all hover:border-amber-300 shadow-sm" placeholder="Enter email address" />
                   </div>
@@ -517,7 +522,7 @@ import Layout from '../layouts/Layout.astro';
 
   <!-- Print Area (Hidden on screen) -->
   <div id="printArea" class="hidden">
-    <div class="mb-6 border-b-2 border-amber-500 pb-5">
+    <div class="mb-4 border-b-2 border-amber-500 pb-5">
       <div class="flex items-center justify-between w-full">
         <div class="w-1/4 flex justify-start">
           <img src="/assets/logos/rong-pencil-logo-croped-resized.png" alt="Rong Pencil Art Academy Logo" class="h-24 w-auto" />
@@ -529,21 +534,22 @@ import Layout from '../layouts/Layout.astro';
           <p class="text-gray-500 text-xs mt-1">Kolsur, North 24 Parganas, 743438</p>
         </div>
         
-        <div class="w-1/4 flex flex-col justify-center items-end text-right">
+        <div class="w-1/4 flex flex-col justify-start items-end text-right">
           <div class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Application ID</div>
           <div class="font-mono text-base font-bold text-amber-800" id="p_app_id"></div>
+          <div class="w-24 h-28 border-2 border-dashed border-gray-400 mt-2 flex items-center justify-center text-center p-1">
+            <span class="text-[10px] text-gray-400">Affix Passport Size Photo Here</span>
+          </div>
         </div>
       </div>
-      <div class="text-center mt-4">
+      <div class="text-center">
         <h2 class="text-sm font-bold text-gray-800 uppercase tracking-widest bg-gray-100 inline-block px-8 py-2 rounded-full border border-gray-300 shadow-sm">Admission Application Form</h2>
       </div>
     </div>
     
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-800">
       <!-- Student Information -->
-      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">
-        Student Information
-      </div>
+      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">Student Information</div>
       <div><span class="font-bold">Name:</span> <span id="p_name"></span></div>
       <div><span class="font-bold">Date of Birth:</span> <span id="p_dob"></span></div>
       <div><span class="font-bold">Gender:</span> <span id="p_gender"></span></div>
@@ -551,32 +557,28 @@ import Layout from '../layouts/Layout.astro';
       <div class="col-span-2"><span class="font-bold">Address:</span> <span id="p_address"></span></div>
 
       <!-- Parent/Guardian Information -->
-      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">
-        Parent/Guardian Information
-      </div>
+      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">Parent/Guardian Information</div>
       <div><span class="font-bold">Name:</span> <span id="p_parent"></span></div>
       <div><span class="font-bold">Relation:</span> <span id="p_relation"></span></div>
       <div><span class="font-bold">Phone:</span> <span id="p_phone"></span></div>
-      <div><span class="font-bold">Email:</span> <span id="p_email"></span></div>
+      <div><span class="font-bold">WhatsApp:</span> <span id="p_whatsapp"></span></div>
+      <div class="col-span-2"><span class="font-bold">Email:</span> <span id="p_email"></span></div>
 
       <!-- Educational Information -->
-      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">
-        Educational Information
-      </div>
+      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">Educational Information</div>
       <div><span class="font-bold">School/College:</span> <span id="p_school"></span></div>
       <div><span class="font-bold">Class/Grade:</span> <span id="p_class"></span></div>
       <div class="col-span-2"><span class="font-bold">Previous Art Experience:</span> <span id="p_experience"></span></div>
 
       <!-- Course Selection -->
-      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">
-        Course Selection
-      </div>
+      <div class="col-span-2 bg-gray-100 p-2 font-bold uppercase text-amber-800 mt-2">Course Selection</div>
       <div><span class="font-bold">Course:</span> <span id="p_course"></span></div>
       <div><span class="font-bold">Batch Timing:</span> <span id="p_batch"></span></div>
       <div class="col-span-2"><span class="font-bold">Reason for joining:</span> <span id="p_reason"></span></div>
     </div>
+
     
-    <div class="mt-16 pt-4 border-t border-gray-300 flex justify-between">
+    <div class="mt-8 pt-4 flex justify-between">
       <div class="text-center">
         <div class="w-48 border-b border-gray-800 mb-2"></div>
         <span class="text-sm">Applicant/Parent Signature</span>
@@ -585,6 +587,14 @@ import Layout from '../layouts/Layout.astro';
         <div class="w-48 border-b border-gray-800 mb-2"></div>
         <span class="text-sm">Academy Authority</span>
       </div>
+    </div>
+    <div class="mt-6 mb-4 p-3 border border-amber-300 bg-amber-50 rounded-lg text-sm text-amber-900">
+      <p class="font-bold mb-1">Documents to submit with this form:</p>
+      <ul class="list-disc pl-5">
+        <li>Xerox copy of Aadhar Card</li>
+        <li>Xerox copy of Birth Certificate</li>
+        <li>2 copies of Passport size photo</li>
+      </ul>
     </div>
   </div>
 
@@ -674,6 +684,7 @@ import Layout from '../layouts/Layout.astro';
           document.getElementById("p_parent").textContent = data.parent || '';
           document.getElementById("p_relation").textContent = toLabel(data.relation);
           document.getElementById("p_phone").textContent = data.phone || '';
+          document.getElementById("p_whatsapp").textContent = data.whatsapp || '';
           document.getElementById("p_email").textContent = data.email || '';
           document.getElementById("p_school").textContent = data.school_name || '';
           document.getElementById("p_class").textContent = data.class || '';
@@ -725,6 +736,7 @@ import Layout from '../layouts/Layout.astro';
           parent: document.getElementById("parentName").value,
           relation: document.getElementById("relation").value,
           phone: document.getElementById("phone").value,
+          whatsapp: document.getElementById("whatsapp").value,
           email: document.getElementById("email").value,
 
           school_name: document.getElementById("school").value,
@@ -774,6 +786,7 @@ import Layout from '../layouts/Layout.astro';
           const relationSelect = document.getElementById("relation");
           document.getElementById("p_relation").textContent = relationSelect.options[relationSelect.selectedIndex]?.text || '';
           document.getElementById("p_phone").textContent = document.getElementById("phone").value;
+          document.getElementById("p_whatsapp").textContent = document.getElementById("whatsapp").value;
           document.getElementById("p_email").textContent = document.getElementById("email").value;
 
           document.getElementById("p_school").textContent = document.getElementById("school").value;

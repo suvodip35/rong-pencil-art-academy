@@ -55,6 +55,12 @@ const exhibitions = data.data;
                   <span class="text-gray-800 font-medium flex-1">{exhibition.artist_name}</span>
                 </div>
               )}
+              {exhibition.painting_title && (
+                <div class="flex items-start">
+                  <span class="text-sm font-bold text-amber-700 w-24 uppercase tracking-wide pt-0.5">Title</span>
+                  <span class="text-gray-800 font-medium flex-1">{exhibition.painting_title}</span>
+                </div>
+              )}
               {exhibition.medium && (
                 <div class="flex items-start">
                   <span class="text-sm font-bold text-amber-700 w-24 uppercase tracking-wide pt-0.5">Medium</span>

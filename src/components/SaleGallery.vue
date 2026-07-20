@@ -2,7 +2,21 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="text-center mb-12">
       <h1 class="text-4xl font-bold text-gray-900 mb-4">Art & Craft Sale</h1>
-      <p class="text-xl text-gray-600">Purchase unique artworks and support our artists</p>
+      <p class="text-xl text-gray-600 mb-6">Purchase unique artworks and support our artists</p>
+
+      <div class="inline-flex flex-col items-center bg-amber-50 rounded-2xl p-4 border border-amber-200 shadow-sm">
+        <p class="text-sm font-semibold text-amber-800 mb-3">For Direct Communication & Inquiries:</p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="tel:+918926391059" class="flex items-center text-amber-700 hover:text-amber-900 font-bold bg-white px-4 py-2 rounded-lg border border-amber-300 shadow-sm transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            +91 8926391059
+          </a>
+          <a href="tel:+918609657661" class="flex items-center text-amber-700 hover:text-amber-900 font-bold bg-white px-4 py-2 rounded-lg border border-amber-300 shadow-sm transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            +91 8609657661
+          </a>
+        </div>
+      </div>
     </div>
 
     <div v-if="loading" class="flex justify-center items-center py-20">
@@ -36,7 +50,13 @@
         
         <div class="p-6">
           <h3 class="text-xl font-bold text-gray-900 mb-2">{{ artwork.name }}</h3>
-          <p class="text-gray-600 mb-3">by {{ artwork.artist }} • {{ artwork.type }}</p>
+          <p class="text-gray-600 mb-1">by <span class="font-semibold">{{ artwork.artist }}</span> • {{ artwork.type }}</p>
+          <p class="text-sm text-gray-500 mb-3" v-if="artwork.medium || artwork.size">
+            <span v-if="artwork.medium">Medium: {{ artwork.medium }}</span>
+            <span v-if="artwork.medium && artwork.size"> | </span>
+            <span v-if="artwork.size">Size: {{ artwork.size }}</span>
+          </p>
+          <p class="text-gray-600 mb-3" v-else></p>
           <div class="flex items-center justify-between">
             <div>
               <span class="text-2xl font-bold text-amber-600">₹{{ artwork.price }}</span>
@@ -77,7 +97,12 @@ const fetchArtworks = async () => {
 };
 
 const getWhatsAppUrl = (artwork) => {
-  const message = encodeURIComponent(`Hi, I'm interested in purchasing this artwork:\n\nName: ${artwork.name}\nArtist: ${artwork.artist}\nType: ${artwork.type}\nPrice: ₹${artwork.price}\nImage: https://client-directus.siliconpin.in/assets/${artwork.img}\n\nPlease provide more details about availability and payment options.`);
+  let messageDetails = `Name: ${artwork.name}\nArtist: ${artwork.artist}\nType: ${artwork.type}`;
+  if (artwork.medium) messageDetails += `\nMedium: ${artwork.medium}`;
+  if (artwork.size) messageDetails += `\nSize: ${artwork.size}`;
+  messageDetails += `\nPrice: ₹${artwork.price}\nImage: https://client-directus.siliconpin.in/assets/${artwork.img}`;
+  
+  const message = encodeURIComponent(`Hi, I'm interested in purchasing this artwork:\n\n${messageDetails}\n\nPlease provide more details about availability and payment options.`);
   return `https://wa.me/${whatsappNumber}?text=${message}`;
 };
 
