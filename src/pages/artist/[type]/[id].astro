@@ -33,6 +33,21 @@ const artistTypes: Record<string, string> = {
   senior: "Senior Artist",
   guest: "Guest Artist",
 };
+
+const siteUrl = Astro.site ? Astro.site.href : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
+
+const artistSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": artist.name,
+  "jobTitle": `${artistTypes[type] || 'Artist'} - ${artist.specialization || 'Fine Art'}`,
+  "image": artist.img ? `https://client-directus.siliconpin.in/assets/${artist.img}` : undefined,
+  "worksFor": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy",
+    "url": siteUrl
+  }
+};
 ---
 
 <Layout 
@@ -40,6 +55,7 @@ const artistTypes: Record<string, string> = {
   description={`Profile of ${artistTypes[type].toLowerCase()} ${artist.name} at Rong Pencil Art Academy. Specialization: ${artist.specialization}. Read about their experience, achievements, and notable works.`}
   keywords={`${artist.name}, ${artistTypes[type].toLowerCase()}, ${artist.specialization || 'fine art'}, art mentor, Rong Pencil Art Academy`}
   ogImage={`https://client-directus.siliconpin.in/assets/${artist.img}`}
+  schema={artistSchema}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->

@@ -37,6 +37,25 @@ const studentTypes: Record<string, string> = {
   senior: "Senior Student",
   adult: "Adult Student",
 };
+
+const siteUrl = Astro.site ? Astro.site.href : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
+
+const studentSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": student.name,
+  "jobTitle": studentTypes[type] || "Student Artist",
+  "image": student.img ? `https://client-directus.siliconpin.in/assets/${student.img}` : undefined,
+  "alumniOf": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy",
+    "url": siteUrl
+  },
+  "address": student.address ? {
+    "@type": "PostalAddress",
+    "streetAddress": student.address
+  } : undefined
+};
 ---
 
 <Layout 
@@ -44,6 +63,7 @@ const studentTypes: Record<string, string> = {
   description={`View the profile, drawing gallery, and paintings of student ${student.name} at Rong Pencil Art Academy. Support our talented young learners.`}
   keywords={`${student.name}, student profile, child artist gallery, student drawings, Rong Pencil Art Academy`}
   ogImage={`https://client-directus.siliconpin.in/assets/${student.img}`}
+  schema={studentSchema}
 >
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->

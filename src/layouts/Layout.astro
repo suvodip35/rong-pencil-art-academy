@@ -7,9 +7,10 @@ export interface Props {
 	description?: string;
 	keywords?: string;
 	ogImage?: string;
+	schema?: Record<string, any> | Record<string, any>[];
 }
 
-const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage } = Astro.props;
+const { title, description = "Rong Pencil Art Academy - Nurturing artistic talent and creativity through comprehensive art education in Kolsur, North 24 Pargana.", keywords = "art academy, pencil art, painting, sketching, art education, Kolsur, North 24 Pargana", ogImage, schema } = Astro.props;
 
 // Determine absolute base URL
 const siteUrl = Astro.site 
@@ -28,6 +29,66 @@ const ogImageType = ogImageURL.toLowerCase().includes('.png') ? 'image/png' : 'i
 
 // Truncate description for social previews (recommended ~125 characters for mobile)
 const shortDescription = description.length > 125 ? description.substring(0, 122) + '...' : description;
+
+// JSON-LD Structured Data
+const defaultOrganizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "@id": `${siteUrl}/#organization`,
+  "name": "Rong Pencil Art Academy",
+  "alternateName": "Rong Pencil",
+  "url": siteUrl,
+  "logo": new URL(defaultLogo, siteUrl).href,
+  "image": ogImageURL,
+  "description": description,
+  "telephone": "+91-8926391059",
+  "email": "rongpencilartacademy17@gmail.com",
+  "sameAs": [
+    "https://www.facebook.com/rongpencilartacademy"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Kolsur",
+    "addressLocality": "Kolsur",
+    "addressRegion": "North 24 Pargana",
+    "postalCode": "743438",
+    "addressCountry": "IN"
+  }
+};
+
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumbItems = [
+  {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": siteUrl
+  }
+];
+
+let accumulatedPath = siteUrl;
+pathSegments.forEach((segment: string, index: number) => {
+  accumulatedPath = `${accumulatedPath.replace(/\/$/, '')}/${segment}`;
+  const readableName = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
+  breadcrumbItems.push({
+    "@type": "ListItem",
+    "position": index + 2,
+    "name": readableName,
+    "item": accumulatedPath
+  });
+});
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbItems
+};
+
+const schemasToRender = [
+  defaultOrganizationSchema,
+  breadcrumbSchema,
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])
+];
 ---
 
 <!DOCTYPE html>
@@ -63,6 +124,13 @@ const shortDescription = description.length > 125 ? description.substring(0, 122
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={ogImageURL} />
+
+		<!-- JSON-LD Structured Data Schemas -->
+		{schemasToRender.map((s) => (
+			<script type="application/ld+json" set:html={JSON.stringify(s)} />
+		))}
+
+		<!-- Google tag (gtag.js) -->
 
 		<!-- Google tag (gtag.js) -->
 		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WE7QRHXXF7"></script>

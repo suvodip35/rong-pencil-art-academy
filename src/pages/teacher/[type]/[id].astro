@@ -44,6 +44,21 @@ const description = isSchool
 const keywords = isSchool
   ? `${teacher.name}, school teacher profile, drawing faculty, academic art instructor, ${teacher.subject || ''}`
   : `${teacher.name}, community teacher, artisan mentor, folk art instructor, ${teacher.subject || ''}`;
+
+const siteUrl = Astro.site ? Astro.site.href : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
+
+const teacherSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": teacher.name,
+  "jobTitle": `${displayType} Teacher - ${teacher.subject || 'Fine Arts'}`,
+  "image": teacher.img ? `https://client-directus.siliconpin.in/assets/${teacher.img}` : undefined,
+  "worksFor": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy",
+    "url": siteUrl
+  }
+};
 ---
 
 <Layout 
@@ -51,6 +66,7 @@ const keywords = isSchool
   description={description}
   keywords={keywords}
   ogImage={`https://client-directus.siliconpin.in/assets/${teacher.img}`}
+  schema={teacherSchema}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back Button -->

@@ -87,12 +87,25 @@ const whyChooseUs = [
     icon: "🎭"
   }
 ];
+
+const courseSchema = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Fine Art, Sketching and Painting Education",
+  "description": "Comprehensive art education program nurturing creativity, sketching, painting, and visual arts for all age groups in Kolsur.",
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy",
+    "sameAs": "https://rongpencilartacademy.in"
+  }
+};
 ---
 
 <Layout 
   title="Rong Pencil Art Academy - Fine Art Education in Kolsur"
   description="Join Rong Pencil Art Academy in Kolsur, North 24 Pargana. We offer expert art education, sketching, painting, and creative courses for all age groups."
   keywords="art academy Kolsur, pencil sketching training, drawing classes North 24 Parganas, fine art school, painting lessons"
+  schema={courseSchema}
 >
   <main>
     <!-- Hero Section -->

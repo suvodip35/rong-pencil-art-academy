@@ -26,12 +26,26 @@ if (otherArtworks.length > 0) {
   sortedPaintings = [...sortedPaintings, ...otherArtworks];
   groupedPaintings.push({ title: 'Other Artworks', artworks: otherArtworks });
 }
+
+const gallerySchema = paintings.map((artwork: any) => ({
+  "@context": "https://schema.org",
+  "@type": "VisualArtwork",
+  "name": artwork.title || "Artwork",
+  "artform": artwork.type || "Painting",
+  "artMedium": artwork.program || "Fine Art",
+  "image": artwork.image ? `${BASE_URL}/assets/${artwork.image}` : undefined,
+  "creator": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy"
+  }
+}));
 ---
 
 <Layout 
   title="Art Gallery - Rong Pencil Art Academy"
   description="Browse through the complete gallery of creative artworks, drawings, oil paintings, and watercolor designs by the students and faculty of Rong Pencil Art Academy."
   keywords="art gallery Kolsur, student painting gallery, sketching display, oil paintings portfolio, creative craft gallery"
+  schema={gallerySchema}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="text-center mb-12">

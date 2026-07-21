@@ -4,12 +4,42 @@ const response = await fetch('https://client-directus.siliconpin.in/items/exhibi
 const data = await response.json();
 const exhibitions = data.data;
 // console.log(exhibitions)
+
+const siteUrl = Astro.site ? Astro.site.href : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
+
+const exhibitionSchema = {
+  "@context": "https://schema.org",
+  "@type": "ExhibitionEvent",
+  "name": "Art Exhibitions - Rong Pencil Art Academy",
+  "description": "Art exhibitions showcasing drawings, paintings, and crafts created by students and artists of Rong Pencil Art Academy.",
+  "location": {
+    "@type": "Place",
+    "name": "Rong Pencil Art Academy",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kolsur",
+      "addressRegion": "North 24 Pargana",
+      "addressCountry": "IN"
+    }
+  },
+  "workFeatured": exhibitions.map((ex: any) => ({
+    "@type": "VisualArtwork",
+    "name": ex.title || ex.painting_title || "Art Work",
+    "artMedium": ex.medium || "Mixed Media",
+    "artist": {
+      "@type": "Person",
+      "name": typeof ex.artist_name === 'object' ? ex.artist_name?.name : ex.artist_name || "Academy Student"
+    },
+    "image": ex.painting ? `https://client-directus.siliconpin.in/assets/${ex.painting}` : undefined
+  }))
+};
 ---
 
 <Layout 
   title="Art Exhibitions - Rong Pencil Art Academy"
   description="Explore upcoming and past art exhibitions showcasing the beautiful drawings, paintings, and craft works created by students of Rong Pencil Art Academy."
   keywords="art exhibition Kolsur, student art showcase, painting exhibition, drawing display, art gallery events"
+  schema={exhibitionSchema}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="text-center mb-12">

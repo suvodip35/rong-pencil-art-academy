@@ -1,11 +1,40 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const admissionSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOccupationalProgram",
+    "name": "Art & Painting Courses Admission",
+    "description": "Admissions for Fine Art, Pencil Sketching, Watercolor, Oil Painting, Acrylic, and Charcoal drawing courses at Rong Pencil Art Academy.",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Rong Pencil Art Academy",
+      "sameAs": "https://rongpencilartacademy.in"
+    },
+    "offers": {
+      "@type": "Offer",
+      "category": "Education"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Pencil Sketching & Fine Arts Program",
+    "description": "Structured art courses for Junior (Age 5-12), Senior (Age 13-18), and Adult (18+) categories.",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Rong Pencil Art Academy"
+    }
+  }
+];
 ---
 
 <Layout 
   title="Admissions - Rong Pencil Art Academy"
   description="Enrol at Rong Pencil Art Academy. Fill out our online application form to start your courses in pencil sketching, watercolor, oil painting, and more."
   keywords="art school admission, apply to art academy, pencil sketch course enrollment, Kolsur art classes"
+  schema={admissionSchema}
 >
   <main id="admissionPageContent">
     <!-- Hero Section -->

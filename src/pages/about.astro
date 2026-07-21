@@ -17,12 +17,28 @@ const teamData = [
     img: "/assets/baishakhi-hazra.jpg"
   }
 ];
+
+const siteUrl = Astro.site ? Astro.site.href : (import.meta.env.PUBLIC_SITE_URL || 'https://rongpencilartacademy.in');
+
+const aboutSchema = teamData.map(member => ({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": member.name,
+  "jobTitle": member.role,
+  "image": member.img ? new URL(member.img, siteUrl).href : undefined,
+  "worksFor": {
+    "@type": "EducationalOrganization",
+    "name": "Rong Pencil Art Academy",
+    "url": siteUrl
+  }
+}));
 ---
 
 <Layout 
   title="About Us - Rong Pencil Art Academy"
   description="Learn about the story, mission, and vision of Rong Pencil Art Academy. Discover how we cultivate creativity and artistic excellence in Kolsur."
   keywords="about art academy, art education mission, Kolsur art school history, creative values"
+  schema={aboutSchema}
 >
   <main>
     <!-- Hero Section -->

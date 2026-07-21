@@ -2,14 +2,27 @@
 import Layout from '../layouts/Layout.astro';
 const response = await fetch('https://client-directus.siliconpin.in/items/painting?fields=*,painted_by.name&filter[status][_eq]=published')
 const paintingsData = await response.json()
-const paintings = paintingsData.data
+const paintings = paintingsData.data || [];
 // console.log(paintings)
+
+const paintingSchema = paintings.map((p: any) => ({
+  "@context": "https://schema.org",
+  "@type": "VisualArtwork",
+  "name": p.paint_name || "Painting",
+  "artMedium": p.medium || "Oil / Watercolor",
+  "image": p.img ? `https://client-directus.siliconpin.in/assets/${p.img}` : undefined,
+  "artist": {
+    "@type": "Person",
+    "name": p.painted_by?.name || "Rong Pencil Art Academy Artist"
+  }
+}));
 ---
 
 <Layout 
   title="Paintings Portfolio - Rong Pencil Art Academy"
   description="View fine art paintings in acrylic, watercolor, and oil medium created by our academy artists and students. See their creative details and sizes."
   keywords="watercolor paintings, oil canvas art, student paintings Kolsur, acrylic paintings portfolio"
+  schema={paintingSchema}
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-amber-50/50 to-transparent border border-amber-100 mb-16">
