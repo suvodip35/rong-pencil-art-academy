@@ -20,8 +20,9 @@ const siteUrl = Astro.site
 // Resolve the canonical URL for the current page
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 
-const defaultLogo = "/assets/open-graph-image.jpg";
-const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultLogo : ogImage;
+const logoUrl = "/assets/logos/rong-pencil-logo-croped-resized.png";
+const defaultOgBanner = "/assets/open-graph-image.jpg";
+const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultOgBanner : ogImage;
 
 // Make the OG image URL absolute
 const ogImageURL = new URL(resolvedOgImage, siteUrl).href;
@@ -38,7 +39,7 @@ const defaultOrganizationSchema = {
   "name": "Rong Pencil Art Academy",
   "alternateName": "Rong Pencil",
   "url": siteUrl,
-  "logo": new URL(defaultLogo, siteUrl).href,
+  "logo": new URL(logoUrl, siteUrl).href,
   "image": ogImageURL,
   "description": description,
   "telephone": "+91-8926391059",
