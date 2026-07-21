@@ -25,6 +25,9 @@ const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.in
 // Make the OG image URL absolute
 const ogImageURL = new URL(resolvedOgImage, siteUrl).href;
 const ogImageType = ogImageURL.toLowerCase().includes('.png') ? 'image/png' : 'image/jpeg';
+
+// Truncate description for social previews (recommended ~125 characters for mobile)
+const shortDescription = description.length > 125 ? description.substring(0, 122) + '...' : description;
 ---
 
 <!DOCTYPE html>
@@ -47,7 +50,7 @@ const ogImageType = ogImageURL.toLowerCase().includes('.png') ? 'image/png' : 'i
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
+		<meta property="og:description" content={shortDescription} />
 		<meta property="og:image" content={ogImageURL} />
 		<meta property="og:image:secure_url" content={ogImageURL} />
 		<meta property="og:image:type" content={ogImageType} />
