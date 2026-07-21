@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const response = await fetch('https://client-directus.siliconpin.in/items/exhibitions?filter[status][_eq]=published');
+const response = await fetch('https://client-directus.siliconpin.in/items/exhibitions?fields=*,artist_name.*&filter[status][_eq]=published');
 const data = await response.json();
 const exhibitions = data.data;
 // console.log(exhibitions)
@@ -46,13 +46,22 @@ const exhibitions = data.data;
           </div>
           
           <div class="p-6 flex-1 flex flex-col">
-            <h3 class="text-2xl font-bold text-gray-900 mb-4">{exhibition.title}</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">{exhibition.title}</h3>
             
-            <div class="space-y-3 mt-auto">
+            <div class="space-y-2 mt-auto">
               {exhibition.artist_name && (
                 <div class="flex items-start">
                   <span class="text-sm font-bold text-amber-700 w-24 uppercase tracking-wide pt-0.5">Artist</span>
-                  <span class="text-gray-800 font-medium flex-1">{exhibition.artist_name}</span>
+                  {exhibition.artist_name?.id && exhibition.artist_name?.type ? (
+                    <a class="text-amber-600 font-semibold flex-1 hover:text-amber-800 underline underline-offset-2 decoration-amber-600/30 hover:decoration-amber-800 transition-colors inline-flex items-center gap-1" target="_blank" href={`/student/${exhibition.artist_name.type}/${exhibition.artist_name.id}`}>
+                      {exhibition.artist_name.name}
+                      <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                  ) : (
+                    <span class="text-gray-800 font-medium flex-1">
+                      {typeof exhibition.artist_name === 'object' ? exhibition.artist_name.name : exhibition.artist_name}
+                    </span>
+                  )}
                 </div>
               )}
               {exhibition.painting_title && (
@@ -160,7 +169,8 @@ const exhibitions = data.data;
       lightboxImage.src = `${BASE_URL}/assets/${artwork.painting}`;
       lightboxImage.alt = artwork.title;
       lightboxTitle.textContent = artwork.title;
-      lightboxArtist.textContent = artwork.artist_name ? `Artist: ${artwork.artist_name}` : '';
+      const artistName = typeof artwork.artist_name === 'object' ? artwork.artist_name?.name : artwork.artist_name;
+      lightboxArtist.textContent = artistName ? `Artist: ${artistName}` : '';
       
       lightboxMedium.textContent = artwork.medium || '';
       lightboxSize.textContent = artwork.size || '';
