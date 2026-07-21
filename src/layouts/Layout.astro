@@ -19,7 +19,7 @@ const siteUrl = Astro.site
 // Resolve the canonical URL for the current page
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
 
-const defaultLogo = "/assets/logos/rong-pencil-banner.jpg";
+const defaultLogo = "/assets/open-graph-image.jpg";
 const resolvedOgImage = (!ogImage || ogImage.includes("undefined") || ogImage.includes("null") || ogImage.trim() === "") ? defaultLogo : ogImage;
 
 // Make the OG image URL absolute
