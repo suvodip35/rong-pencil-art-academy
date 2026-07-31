@@ -65,11 +65,16 @@
 
         <!-- Mobile menu button -->
         <div class="md:hidden">
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 p-2 rounded-lg">
-            <svg v-if="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button 
+            @click="mobileMenuOpen = !mobileMenuOpen" 
+            :aria-label="mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'"
+            :aria-expanded="mobileMenuOpen"
+            class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 p-2 rounded-lg"
+          >
+            <svg v-if="!mobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
-            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>

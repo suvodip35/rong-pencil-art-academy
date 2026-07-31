@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import HomePageMenuItems from '../components/HomePageMenuItems.astro';
 import OurProgram from '../components/OurProgram.astro';
 import NoticeBoard from '../components/NoticeBoard.vue';
+import GalleryPreview from '../components/GalleryPreview.vue';
 
 const BASE_URL = 'https://client-directus.siliconpin.in';
 
@@ -20,32 +21,31 @@ const exhibitions = exhibitionsData.data;
 const paintingsResponse = await fetch(`${BASE_URL}/items/painting?filter[status][_eq]=published&fields=*,painted_by.name`);
 const paintingsData = await paintingsResponse.json();
 const paintings = paintingsData.data || [];
-
-const mergedArtworks = [
-  ...exhibitions.map((ex: any) => ({
-    type: 'exhibition',
-    id: ex.id,
-    title: ex.title,
-    image: ex.painting ? `${BASE_URL}/assets/${ex.painting}` : null,
-    category: ex.medium || 'Exhibition',
-    artist: ex.artist_name || 'Academy',
-    description: ex.size ? `Size: ${ex.size}` : '',
-    date_created: ex.date_created,
-    year: ex.date_created ? new Date(ex.date_created).getFullYear() : ''
-  })),
-  ...paintings.map((pt: any) => ({
-    type: 'painting',
-    id: pt.id,
-    title: pt.paint_name,
-    image: `${BASE_URL}/assets/${pt.img}`,
-    category: pt.medium || 'Artwork',
-    artist: pt.painted_by?.name || 'Unknown Artist',
-    description: '',
-    date_created: pt.date_created,
-    year: pt.year || ''
-  }))
-];
-const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+// const mergedArtworks = [
+//   ...exhibitions.map((ex: any) => ({
+//     type: 'exhibition',
+//     id: ex.id,
+//     title: ex.title,
+//     image: ex.painting ? `${BASE_URL}/assets/${ex.painting}` : null,
+//     category: ex.medium || 'Exhibition',
+//     artist: ex.artist_name || 'Academy',
+//     description: ex.size ? `Size: ${ex.size}` : '',
+//     date_created: ex.date_created,
+//     year: ex.date_created ? new Date(ex.date_created).getFullYear() : ''
+//   })),
+//   ...paintings.map((pt: any) => ({
+//     type: 'painting',
+//     id: pt.id,
+//     title: pt.paint_name,
+//     image: `${BASE_URL}/assets/${pt.img}`,
+//     category: pt.medium || 'Artwork',
+//     artist: pt.painted_by?.name || 'Unknown Artist',
+//     description: '',
+//     date_created: pt.date_created,
+//     year: pt.year || ''
+//   }))
+// ];
+// const artworks = mergedArtworks.sort((a: any, b: any) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
 // console.log('Artworks:', artworks);
 const testimonials = [
   {
@@ -320,23 +320,7 @@ const courseSchema = {
           <h2 class="text-4xl font-bold text-gray-900 mb-4">Gallery Preview</h2>
           <p class="text-xl text-gray-600 max-w-2xl mx-auto">A glimpse into our artistic creations</p>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {artworks.slice(0, 5).map((artwork: any, index: number) => (
-            <div class={`${index === 0 ? 'col-span-2 row-span-2' : ''} relative rounded-2xl overflow-hidden group`}>
-              <img src={artwork.image} alt={artwork.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-end justify-end p-6">
-                <span class="text-white font-semibold text-lg">{artwork.title}</span>
-                <span class="text-white/80 text-sm">{artwork.artist}</span>
-                <span class="text-amber-300 text-xs mt-1">{artwork.category}</span>
-              </div>
-              {artwork.type === 'exhibition' && (
-                <div class={`absolute top-4 right-4 text-white px-3 py-1 rounded-full text-xs font-semibold ${artwork.category === 'Upcoming' ? 'bg-amber-500' : artwork.category === 'Completed' ? 'bg-green-500' : 'bg-gray-500'}`}>
-                  {artwork.category}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <GalleryPreview client:visible />
         <div class="text-center mt-12">
           <a href="/gallery" class="inline-flex items-center bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
             View Full Gallery
