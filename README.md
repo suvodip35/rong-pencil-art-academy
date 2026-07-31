@@ -95,4 +95,4 @@ All commands are run from the project root directory:
 
 For direct communication or inquiries regarding art academy admissions or purchasing artwork:
 - **Phone**: +91 8926391059 / +91 8609657661
-- **Website**: [Rong Pencil Art Academy](https://wa.me/918926391059)
+- **Website**: [Rong Pencil Art Academy](https://rongpencilartacademy.in)
