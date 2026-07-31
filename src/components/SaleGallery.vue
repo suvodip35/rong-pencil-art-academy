@@ -97,7 +97,8 @@ const fetchArtworks = async () => {
 };
 
 const getWhatsAppUrl = (artwork) => {
-  let messageDetails = `Object ID: ${toLowerCase(artwork.name) + "-" + artwork.size + "-" + artwork.id}\nName: ${artwork.name}\nArtist: ${artwork.artist}\nType: ${artwork.type}`;
+  const nameSlug = artwork.name ? artwork.name.toLowerCase() : '';
+  let messageDetails = `Object ID: ${nameSlug + "-" + (artwork.size || '') + "-" + artwork.id}\nName: ${artwork.name}\nArtist: ${artwork.artist}\nType: ${artwork.type}`;
   if (artwork.medium) messageDetails += `\nMedium: ${artwork.medium}`;
   if (artwork.size) messageDetails += `\nSize: ${artwork.size}`;
   messageDetails += `\nPrice: ₹${artwork.price}\nImage: https://client-directus.siliconpin.in/assets/${artwork.img}`;
