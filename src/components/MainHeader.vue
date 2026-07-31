@@ -58,6 +58,7 @@
 
           <a href="/exhibition" class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 px-4 py-2 rounded-lg transition-colors font-medium">Exhibition</a>
           <a href="/painting" class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 px-4 py-2 rounded-lg transition-colors font-medium">Painting</a>
+          <a href="/photography" class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 px-4 py-2 rounded-lg transition-colors font-medium">Photography</a>
           <a href="/sale" class="text-gray-700 hover:text-amber-600 hover:bg-amber-50 px-4 py-2 rounded-lg transition-colors font-medium">Art Sale</a>
           <a href="/admission" class="hidden lg:block bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors font-medium hover:bg-amber-700">Admission</a>
         </div>
